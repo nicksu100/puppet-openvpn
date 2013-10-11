@@ -1,0 +1,21 @@
+local <%= @local_ip %> 
+port <%= @port %> 
+proto <%= @proto %> 
+dev <%= @tun_dev %> 
+server <%= @vpn_server %>
+route  <%= @vpn_route %> 
+client-to-client
+ca /etc/puppet/ssl/certs/ca.pem
+cert /etc/puppet/ssl/certs/<%= @fqdn %>.pem
+key /etc/puppet/ssl/private_keys/<%= @fqdn %>.pem
+dh dh1024.pem
+tls-auth ta.key 0
+ifconfig-pool-persist /var/log/ipp.txt
+client-config-dir ccd
+persist-key
+persist-tun
+verb <%= @log_level %> 
+mute 20
+user <%= @vpn_user %> 
+group <%= @vpn_group %> 
+keepalive 10 60

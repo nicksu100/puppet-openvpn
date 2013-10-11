@@ -1,0 +1,17 @@
+# Puppet controlled file
+#Note we are using puppet certs for connections 
+client
+remote <%= @remote_ip %> <%= @remote_port %> 
+proto <%= @proto %>
+dev <%= @tun_dev %>
+ca /etc/puppet/ssl/certs/ca.pem
+cert /etc/puppet/ssl/certs/<%= @fqdn %>.pem
+key /etc/puppet/ssl/private_keys/<%= @fqdn %>.pem
+tls-client
+tls-auth ta.key 1
+user <%= @vpn_user %>
+group <%= @vpn_group %>
+persist-tun
+persist-key
+keepalive 10 60
+verb 3
