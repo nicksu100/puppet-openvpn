@@ -15,7 +15,7 @@ This OpenVPN module uses the Puppet Certificate Authority. This negates the need
 ##Module Description
 
 
-OpenVPN is a widely-used vpn, and this module provides a way of creating the OpenVPN server and client configurations for puppet managed machines. 
+OpenVPN is a widely-used vpn. This module creates the OpenVPN server and client configurations for puppet managed machines. 
 
 ##Setup
 
