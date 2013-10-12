@@ -24,9 +24,5 @@ class openvpn::package {
           source => "puppet:///modules/openvpn/openvpn_init",
        }
    
-      exec { "create_dh":
-      onlyif => "test -f /etc/openvpn/server.conf",
-      command => "/usr/sbin/openssl dhparam -out /etc/openvpn/dh2048.pem 2048",
-  }
 
 }

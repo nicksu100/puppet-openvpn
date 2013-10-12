@@ -45,4 +45,9 @@ class openvpn::server {
            mode => 0755, 
          }
 
+
+       exec { "create_dh":
+       onlyif => "test ! -f /etc/openvpn/dh2048.pem",
+       command => "/usr/sbin/openssl dhparam -out /etc/openvpn/dh2048.pem 2048",
+
 }
