@@ -10,28 +10,26 @@
 #              }
 #
 ######################################################################
-     define openvpn::client (
-                $remote_ip,
+
+define openvpn::client (
+	 	$remote_ip, 
                 $tun_dev,
-                $remote_port    = "1194",
-                $proto          = "udp",
+                $remote_port 	= "1194", 
+                $proto 		= "udp", 
                 $vpn_user       = "_openvpn",
                 $vpn_group      = "_openvpn")
     {
 
+      include openvpn
+      include openvpn::ta
+      include openvpn::params
 
-
-      include openvpn::package
-      include openvpn::vpnconf
-
-      file { "/etc/openvpn/${name}.conf:
+      file { "/etc/openvpn/${name}.conf":
          content => template("openvpn/client.erb"),
-         owner => root,
-         group => wheel,
-         mode => 640,
+         owner   => root,
+         group   => wheel,
+         mode    => 640,
          require => Package["openvpn"],
-         notify => Exec[openvpn_load]
+         notify  => Exec[openvpn_load]
          }
-      } 
-   
-}  
+     } 

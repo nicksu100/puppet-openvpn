@@ -7,7 +7,7 @@
 # myhost1.acme.com: ifconfig-push 10.5.129.1  10.5.129.2
 # myhost2.acme.com  ifconfig-push 10.5.129.1  10.5.129.2
 ##################################################################
-#	    $vpn_cc_ip             = "10.5.129"
+#           $vpn_cc_ip             = "10.5.129"
 #           $domain_name           = "acme.com"
 #
 #           openvpn::cc {
@@ -21,18 +21,18 @@
 
 #################################################################
  
- define openvpn::cc (
+ define openvpn::cc ( 
            $server_ip,
            $client_ip)
-   {
+           
+   { 
+      
 
 # Add cc fixed ip required for BGP
-
     file { "/etc/openvpn/ccd/${name}":
          content => template("openvpn/cc.erb"),
-         owner => root,
-         group => wheel,
-         mode => 644,
-      }
+         owner   => root,
+         group   => wheel,
+         mode    => 644,
+     }
    }
-

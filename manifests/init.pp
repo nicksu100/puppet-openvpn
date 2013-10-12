@@ -1,6 +1,10 @@
 # Usage :: 
 
-class openvpn::package {
+class openvpn {
+
+       include openvpn::params
+  
+       $openvpn_dir = $openvpn::params::openvpn_dir
 
        package { "openvpn":  
                  ensure => "present",
@@ -10,19 +14,26 @@ class openvpn::package {
         },
                }
  
-    file { "/etc/openvpn":
+      file { "${openvpn_dir}":
            ensure => directory, 
-           owner => "root",
-           group => "wheel",
-           mode => 0755, 
+           owner  => "root",
+           group  => "wheel",
+           mode   => 0755, 
          }
+      file { "${openvpn_dir}/ccd":
+           ensure => directory,
+           owner  => "root",
+           group  => "wheel",
+           mode   => 0755,
+      }
 
-    file { "/etc/rc.d/openvpn":
+
+     file { "/etc/rc.d/openvpn":
           owner => root,
           group => wheel,
           mode => 755,
           source => "puppet:///modules/openvpn/openvpn_init",
-       }
-   
+        }
+      
 
 }

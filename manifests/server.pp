@@ -12,8 +12,7 @@
 #       realize( Openvpn::Server::Localvpnserver["${hostname}vpnserver"])
 #############################################################################
 
-
-class openvpn::server {
+ class openvpn::server {
        define localvpnserver (
         $tun_dev,
         $local_ip,
@@ -25,29 +24,27 @@ class openvpn::server {
         $vpn_group	 = "_openvpn",
         $log_level	 = "1") 
     { 
+      
+      include openvpn
+      include openvpn::ta
+      include openvpn::params
+ 
+      $openvpn_dir = $openvpn::params::openvpn_dir
 
- include openvpn::vpnconf
-
-        file { "/etc/openvpn/server.conf":
+        file { "${openvpn_dir}/server.conf":
           content => template("openvpn/server.erb"),
-          owner => root,
-          group => wheel,
-          mode => 640,
+          owner   => root,
+          group   => wheel,
+          mode    => 640,
           require => Package["openvpn"],
-          notify => Exec[openvpn_load]
+          notify  => Exec[openvpn_load]
        }
+
     }
 
-	file { "/etc/openvpn/ccd":
-           ensure => directory, 
-           owner => "root",
-           group => "wheel",
-           mode => 0755, 
-         }
 
-
-       exec { "create_dh":
-       onlyif => "test ! -f /etc/openvpn/dh2048.pem",
-       command => "/usr/sbin/openssl dhparam -out /etc/openvpn/dh2048.pem 2048",
-
-}
+     exec { "create_dh":
+      onlyif  => "test ! -f /etc/openvpn/dh2048.pem",
+      command => "/usr/sbin/openssl dhparam -out /etc/openvpn/dh2048.pem 2048",
+     }  
+ }
