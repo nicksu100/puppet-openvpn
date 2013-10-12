@@ -24,7 +24,7 @@
       include openvpn::package
       include openvpn::vpnconf
 
-      file { "/etc/openvpn/client.conf":
+      file { "/etc/openvpn/${name}.conf:
          content => template("openvpn/client.erb"),
          owner => root,
          group => wheel,
