@@ -1,24 +1,25 @@
 # Usage :: 
-# Add the follwoing to your clients node manifest
-# Make remote_ip => the address of your server or fqdn
+# Add the follwoing to your clients node manifest.
+# Make remote_ip => the address of your server or fqdn.
+# Make tun_dev   => your tun device
 #######################################################################
-#  include openvpn::client
-#          @openvpn::client::localvpnclient { "${hostname}daffy":
-#           remote_ip => "10.1.0.1",
-#         }
-#       realize( Openvpn::Client::Localvpnclient["${hostname}ables"])
+#          openvpn::client {
+#               "server1":
+#                remote_ip => "server1.acme.com",
+#                tun_dev   => "tun0",
+#              }
+#
 ######################################################################
-
-
-class openvpn::client {
-      define localvpnclient (
-	 	$remote_ip, 
-                $remote_port 	= "1194", 
-                $proto 		= "udp", 
+     define openvpn::client (
+                $remote_ip,
+                $tun_dev,
+                $remote_port    = "1194",
+                $proto          = "udp",
                 $vpn_user       = "_openvpn",
-                $vpn_group      = "_openvpn",
-                $tun_dev	= "tun0") 
+                $vpn_group      = "_openvpn")
     {
+
+
 
       include openvpn::package
       include openvpn::vpnconf
