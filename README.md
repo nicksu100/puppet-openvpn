@@ -8,6 +8,7 @@ puppet-openvpn
 3. [Sever Setup - The basics of getting started with OpenVPN Server. ](#server-setup)
 4. [Static Client Setup - Supporting static clients or BGP configurations. ](#static-client-setup)
 5. [Client Setup - How to connect to your server. ](#client-setup)
+6. [Tls-auth - Creating your ta.key for use with this module. ](#client-setup)
 
 ##Overview
 
@@ -17,6 +18,7 @@ This OpenVPN module uses the Puppet Certificate Authority. This negates the need
 
 
 OpenVPN is a widely-used ssl vpn. This module creates the OpenVPN server and client configurations for puppet managed machines. 
+Because I am using puppet keys this module enforces the use of tls-auth see tls-auth(#tls-auth) 
 
 ##Server Setup
 
@@ -69,3 +71,21 @@ OpenVPN is a widely-used ssl vpn. This module creates the OpenVPN server and cli
                 tun_dev   => "tun0",
               }
  ```
+
+## Tls-auth
+You will need to run the following from a machine with openvpn installed.  
+
+ ```
+openvpn --genkey --secret ta.key
+ ```
+Then copy the ta.key file over a secure channel to the files directory under the puppet-openvpn module.
+
+Here is some more information on why the ta.key is a good idea taken from openvpn.net:
+The tls-auth directive adds an additional HMAC signature to all SSL/TLS handshake packets for integrity verification. Any UDP packet not bearing the correct HMAC signature can be dropped without further processing. The tls-auth HMAC signature provides an additional level of security above and beyond that provided by SSL/TLS. It can protect against:
+   * DoS attacks or port flooding on the OpenVPN UDP port.
+   * Port scanning to determine which server UDP ports are in a listening state.
+   * Buffer overflow vulnerabilities in the SSL/TLS implementation.
+   * SSL/TLS handshake initiations from unauthorized machines (while such handshakes would ultimately fail to authenticate, tls-auth can cut them off at a much earlier point).
+
+
+

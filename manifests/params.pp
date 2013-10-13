@@ -9,7 +9,7 @@
         $openvpn_dir = "/usr/local/etc/openvpn"
       }
      default: {
-        $openvpn_dir = "/etc/openvpn"
+      	  $openvpn_dir = "/etc/openvpn"
       }
   
    }
