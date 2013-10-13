@@ -8,7 +8,7 @@ client-to-client
 ca /etc/puppet/ssl/certs/ca.pem
 cert /etc/puppet/ssl/certs/<%= @fqdn %>.pem
 key /etc/puppet/ssl/private_keys/<%= @fqdn %>.pem
-dh dh1024.pem
+dh dh2048.pem
 tls-auth ta.key 0
 ifconfig-pool-persist /var/log/ipp.txt
 client-config-dir ccd
