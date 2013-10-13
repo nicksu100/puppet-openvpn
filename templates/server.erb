@@ -3,8 +3,8 @@ port <%= @port %>
 proto <%= @proto %> 
 dev <%= @tun_dev %> 
 server <%= @vpn_server %>
-route  <%= @vpn_route %> 
 client-to-client
+push "route <%= @vpn_route %>" 
 ca /etc/puppet/ssl/certs/ca.pem
 cert /etc/puppet/ssl/certs/<%= @fqdn %>.pem
 key /etc/puppet/ssl/private_keys/<%= @fqdn %>.pem
