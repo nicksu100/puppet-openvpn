@@ -12,7 +12,8 @@ puppet-openvpn
 
 ##Overview
 
-This OpenVPN module uses the Puppet Certificate Authority. This negates the need to setup a Certificate Authority.   
+This OpenVPN module uses the Puppet Certificate Authority. This negates the need to setup a Certificate Authority. 
+I am using this setup to provide a BGP full mesh backup to an MPLS network.
 
 ##Module Description
 
