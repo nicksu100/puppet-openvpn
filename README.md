@@ -81,11 +81,12 @@ openvpn --genkey --secret ta.key
 Then copy the ta.key file over a secure channel to the files directory under the puppet-openvpn module.
 
 Here is some more information on why the ta.key is a good idea taken from openvpn.net:
-The tls-auth directive adds an additional HMAC signature to all SSL/TLS handshake packets for integrity verification. Any UDP packet not bearing the correct HMAC signature can be dropped without further processing. The tls-auth HMAC signature provides an additional level of security above and beyond that provided by SSL/TLS. It can protect against:
-   * DoS attacks or port flooding on the OpenVPN UDP port.
-   * Port scanning to determine which server UDP ports are in a listening state.
-   * Buffer overflow vulnerabilities in the SSL/TLS implementation.
-   * SSL/TLS handshake initiations from unauthorized machines (while such handshakes would ultimately fail to authenticate, tls-auth can cut them off at a much earlier point).
+
+>The tls-auth directive adds an additional HMAC signature to all SSL/TLS handshake packets for integrity verification. Any UDP packet not bearing the correct HMAC signature can be dropped without further processing. The tls-auth HMAC signature provides an additional level of security above and beyond that provided by SSL/TLS. It can protect against:
+>   * DoS attacks or port flooding on the OpenVPN UDP port.
+>   * Port scanning to determine which server UDP ports are in a listening state.
+>   * Buffer overflow vulnerabilities in the SSL/TLS implementation.
+>   * SSL/TLS handshake initiations from unauthorized machines (while such handshakes would ultimately fail to authenticate, tls-auth can cut them off at a much earlier point).
 
 
 
