@@ -3,11 +3,11 @@ puppet-openvpn
 
 ####Table of Contents
 
-1. [Overview - What is this OpenVPN Module](#overview)
+1. [Overview - What is this OpenVPN Module.](#overview)
 2. [Module Description - What does the module do?](#module-description)
-3. [Sever Setup - The basics of getting started with OpenVPN ](#server-setup)
-4. [Static Client Setup -  ](#static-client-setup)
-5. [Client Setup](#client-setup)
+3. [Sever Setup - The basics of getting started with OpenVPN Server. ](#server-setup)
+4. [Static Client Setup - Supporting static clients or BGP configurations. ](#static-client-setup)
+5. [Client Setup - How to connect to your server. ](#client-setup)
 
 ##Overview
 
@@ -32,7 +32,7 @@ OpenVPN is a widely-used ssl vpn. This module creates the OpenVPN server and cli
  ```
 
 ##Static Client Setup
- Static client configs can be implemented as below which would create 2 config files. This is required if you are using BGP for routing. 
+ Static client configs can be implemented as below which would create 2 config files. 
 
  myhost1.acme.com
 
