@@ -59,9 +59,6 @@ OpenVPN is a widely-used ssl vpn. This module creates the OpenVPN server and cli
  ```
 
 ## Client Setup
-
-Add the follwoing to your clients node manifest.
-
  Make remote_ip => the address of your server or fqdn.
 
  Make tun_dev   => your tun device
