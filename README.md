@@ -18,7 +18,7 @@ This OpenVPN module uses the Puppet Certificate Authority. This negates the need
 
 
 OpenVPN is a widely-used ssl vpn. This module creates the OpenVPN server and client configurations for puppet managed machines. 
-Because I am using puppet keys this module enforces the use of tls-auth see tls-auth(#tls-auth) 
+Because I am using puppet keys this module enforces the use of tls-auth see [tls-auth](#tls-auth) 
 
 ##Server Setup
 
