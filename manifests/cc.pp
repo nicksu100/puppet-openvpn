@@ -2,8 +2,8 @@
 # Static client config
 # Can be implemented as below which would create 2 config files
 # myhost1.acme.com
-# myhost2.acme.com 
-# With the following content 
+# myhost2.acme.com
+# With the following content
 # myhost1.acme.com: ifconfig-push 10.5.129.1  10.5.129.2
 # myhost2.acme.com  ifconfig-push 10.5.129.1  10.5.129.2
 ##################################################################
@@ -20,19 +20,19 @@
 #           }
 
 #################################################################
- 
- define openvpn::cc ( 
+
+ define openvpn::cc (
            $server_ip,
            $client_ip)
-           
+
    { 
-      
+
 
 # Add cc fixed ip required for BGP
     file { "/etc/openvpn/ccd/${name}":
-         content => template("openvpn/cc.erb"),
+         content => template('openvpn/cc.erb'),
          owner   => root,
          group   => wheel,
-         mode    => 644,
+         mode    => '0644',
      }
    }

@@ -1,13 +1,13 @@
 # Usage :: Add the following to your nodes manifest for the openvpn server
 #  tun_dev : being the tun device
 #  local_ip : being the listening address
-# 
+#
 ############################################################################
 ## Openvpn server
 #          include openvpn::server
 #          @openvpn::server::localvpnserver { "${hostname}vpnserver":
-#           tun_dev => "tun0",
-#           local_ip => "10.1.0.1",
+#           tun_dev => 'tun0',
+#           local_ip => '10.1.0.1',
 #         }
 #       realize( Openvpn::Server::Localvpnserver["${hostname}vpnserver"])
 #############################################################################
@@ -16,31 +16,31 @@
        define localvpnserver (
         $tun_dev,
         $local_ip,
-        $port		 = "1194",
-        $proto 		 = "udp",
-        $vpn_server      = "10.5.128.0 255.255.255.0",
-        $vpn_route	 = "10.5.129.0 255.255.255.0",
-        $vpn_user	 = "_openvpn",
-        $vpn_group	 = "_openvpn",
-        $log_level	 = "1") 
-    { 
-      
+        $port		 = '1194',
+        $proto 		 = 'udp',
+        $vpn_server      = '10.5.128.0 255.255.255.0',
+        $vpn_route	 = '10.5.129.0 255.255.255.0',
+        $vpn_user	 = '_openvpn',
+        $vpn_group	 = '_openvpn',
+        $log_level	 = '1')
+    {
+
       include openvpn
       include openvpn::ta
       include openvpn::params
- 
+
       $openvpn_dir = $openvpn::params::openvpn_dir
 
         file { "${openvpn_dir}/server.conf":
-          content => template("openvpn/server.erb"),
+          content => template('openvpn/server.erb'),
           owner   => root,
           group   => wheel,
-          mode    => 640,
-          require => Package["openvpn"],
+          mode    => '0640',
+          require => Package['openvpn'],
           notify  => Exec[openvpn_load]
        }
 
-     exec { "create_dh":
+     exec { 'create_dh':
       onlyif  => "test ! -f ${openvpn_dir}/dh2048.pem",
       command => "/usr/sbin/openssl dhparam -out ${openvpn_dir}/dh2048.pem 2048",
      }  
