@@ -8,7 +8,7 @@ puppet-openvpn
 3. [Sever Setup - The basics of getting started with OpenVPN Server. ](#server-setup)
 4. [Static Client Setup - Supporting static clients or BGP configurations. ](#static-client-setup)
 5. [Client Setup - How to connect to your server. ](#client-setup)
-6. [Tls-auth - Creating your ta.key for use with this module. ](#client-setup)
+6. [Tls-auth - Creating your ta.key for use with this module. ](#tls-auth)
 
 ##Overview
 
@@ -19,7 +19,7 @@ I am using this setup to provide an iBGP full mesh backup on OpenBSD.
 
 
 OpenVPN is a widely-used ssl vpn. This module creates the OpenVPN server and client configurations for puppet managed machines. 
-Because I am using puppet keys this module enforces the use of tls-auth see [tls-auth](#tls-auth) 
+Because I am using puppet keys this module enforces the use of tls-auth see [tls-auth](#tls-auth). 
 
 ##Server Setup
 
