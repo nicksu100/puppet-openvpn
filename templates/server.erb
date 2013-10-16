@@ -1,12 +1,16 @@
-# Puppet controlled
+# Puppet controlled file
 mode server
-local <%= @local_ip %> 
-port <%= @port %> 
-proto <%= @proto %> 
-dev <%= @tun_dev %> 
+local <%= @local_ip %>
+port <%= @port %>
+proto <%= @proto %>
+dev <%= @tun_dev %>
 server <%= @vpn_server %>
 client-to-client
-push "route <%= @vpn_route %>" 
+<% if @vpn_route.is_a? Array -%>
+<% @vpn_route.each do |a| %>push route <%= a %><%= "\n" %><% end -%>
+<% else if @vpn_route != '' %><% end %>
+push "route <%= @vpn_route -%>"
+<% end -%>
 ca /etc/puppet/ssl/certs/ca.pem
 cert /etc/puppet/ssl/certs/<%= @fqdn %>.pem
 key /etc/puppet/ssl/private_keys/<%= @fqdn %>.pem
@@ -15,9 +19,19 @@ tls-auth ta.key 0
 ifconfig-pool-persist /var/log/ipp.txt
 client-config-dir ccd
 persist-key
-persist-tun
-verb <%= @log_level %> 
+persist-tu
+verb <%= @log_level %>
 mute 20
-user <%= @vpn_user %> 
-group <%= @vpn_group %> 
+<% if operatingsystem == "FreeBSD" -%>
+user openvpn
+group openvpn
+<% elsif operatingsystem == "OpenBSD" -%>
+user _openvpn
+group _openvpn
+<% else -%>
+user nobody
+group nogroup
+<% end -%>
+#user <%= @vpn_user %>
+#group <%= @vpn_group %>
 keepalive 10 60

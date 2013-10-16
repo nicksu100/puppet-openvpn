@@ -4,15 +4,38 @@
 #
  class openvpn::params {
 
-   case $::operatingsystem ? {
-       'freebsd': {
-        $openvpn_dir = '/usr/local/etc/openvpn'
-      }
-     default: {
-      	  $openvpn_dir = '/etc/openvpn'
-      }
+   $openvpn_dir = $::operatingsystem ? {
+       FreeBSD => '/usr/local/etc/openvpn',
+      default  => '/etc/openvpn'
+   }  
 
+
+   $group_perms = $::operatingsystem ? {
+     FreeBSD		   => 'wheel',
+     OpenBSD               => 'wheel',
+    /(?i:Debian|Ubuntu)/   => 'root'
    }
+
+
+   $restart = $::operatingsystem ? {
+       FreeBSD  => '/usr/local/etc/init.d/openvpn restart',
+       OpenBSD  => '/etc/rc.d/openvpn restart',
+       default  => '/etc/init.d/openvpn restart'
+   }
+
+  $vpn_user = $::operatingsystem ? {
+    FreeBSD  		 => '_openvpn',
+    OpenBSD  		 => '_openvpn',
+    /(?i:Debian|Ubuntu)/ => 'nobody',
+    default              => 'openvpn',
+  }
+
+  $vpn_group = $::operatingsystem ? {
+    FreeBSD  		 => '_openvpn',
+    OpenBSD  		 => '_openvpn',
+    /(?i:Debian|Ubuntu)/ => 'nobody',
+    default              => 'openvpn',
+  }
 
 
   service { 'openvpn':
@@ -23,7 +46,7 @@
    }
 
       exec { 'openvpn_load':
-                command     => '/etc/rc.d/openvpn restart',
+                command     => "${restart}",
                 refreshonly => true,
       }
 

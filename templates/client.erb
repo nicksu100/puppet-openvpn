@@ -7,8 +7,16 @@ cert /etc/puppet/ssl/certs/<%= @fqdn %>.pem
 key /etc/puppet/ssl/private_keys/<%= @fqdn %>.pem
 tls-client
 tls-auth ta.key 1
-user <%= @vpn_user %>
-group <%= @vpn_group %>
+<% if operatingsystem == "FreeBSD" %>
+user openvpn 
+group openvpn 
+<% elsif operatingsystem == "OpenBSD" %>
+user _openvpn
+group _openvpn
+<% else %>
+user nobody
+group nogroup 
+<% end %>
 persist-tun
 persist-key
 keepalive 10 60

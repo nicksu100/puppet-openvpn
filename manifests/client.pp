@@ -15,19 +15,21 @@ define openvpn::client (
 	 	$remote_ip,
                 $tun_dev,
                 $remote_port 	= '1194',
-                $proto 		= 'udp',
-                $vpn_user       = '_openvpn',
-                $vpn_group      = '_openvpn')
+                $proto 		= 'udp',)
     {
 
       include openvpn
       include openvpn::ta
       include openvpn::params
 
-      file { "/etc/openvpn/${name}.conf":
+      $openvpn_dir = $openvpn::params::openvpn_dir
+      $group_perms = $openvpn::params::group_perms
+
+
+      file { "${openvpn_dir}/${name}.conf":
          content => template('openvpn/client.erb'),
          owner   => root,
-         group   => wheel,
+         group   => "${group_perms}",
          mode    => '0640',
          require => Package['openvpn'],
          notify  => Exec[openvpn_load]

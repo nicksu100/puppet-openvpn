@@ -19,9 +19,7 @@
         $port		 = '1194',
         $proto 		 = 'udp',
         $vpn_server      = '10.5.128.0 255.255.255.0',
-        $vpn_route	 = '10.5.129.0 255.255.255.0',
-        $vpn_user	 = '_openvpn',
-        $vpn_group	 = '_openvpn',
+        $vpn_route	 = ["10.5.129.0 255.255.255.0","10.8.0.0 255.255.255.0"],
         $log_level	 = '1')
     {
 
@@ -30,19 +28,20 @@
       include openvpn::params
 
       $openvpn_dir = $openvpn::params::openvpn_dir
+      $group_perms = $openvpn::params::group_perms
 
         file { "${openvpn_dir}/server.conf":
           content => template('openvpn/server.erb'),
           owner   => root,
-          group   => wheel,
+          group   => "${group_perms}",
           mode    => '0640',
           require => Package['openvpn'],
-          notify  => Exec[openvpn_load]
+          notify  => Exec[openvpn_load],
        }
 
      exec { 'create_dh':
-      onlyif  => "test ! -f ${openvpn_dir}/dh2048.pem",
-      command => "/usr/sbin/openssl dhparam -out ${openvpn_dir}/dh2048.pem 2048",
-     }  
+     onlyif   => "test ! -f ${openvpn_dir}/dh2048.pem",
+      command => "/usr/sbin/openssl dhparam -out ${openvpn_dir}/dh2048.pem 2048"
+     }
    }
  }

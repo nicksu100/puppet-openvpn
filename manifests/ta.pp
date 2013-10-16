@@ -3,11 +3,11 @@
 # openvpn --genkey --secret ta.key
 
 class openvpn::ta {
-
+       include openvpn::params
 
 	file { '/etc/openvpn/ta.key':
           owner  => root,
-          group  => wheel,
+          group  => $group_perms,
           mode   => '0600',
           source => 'puppet:///modules/openvpn/ta.key',
        }

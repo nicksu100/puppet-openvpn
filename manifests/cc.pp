@@ -27,12 +27,16 @@
 
    { 
 
+ include openvpn::params
+
+      $openvpn_dir = $openvpn::params::openvpn_dir
+      $group_perms = $openvpn::params::group_perms
 
 # Add cc fixed ip required for BGP
-    file { "/etc/openvpn/ccd/${name}":
+    file { "${openvpn_dir}/ccd/${name}":
          content => template('openvpn/cc.erb'),
          owner   => root,
-         group   => wheel,
+         group   => ${group_perms},
          mode    => '0644',
      }
    }
