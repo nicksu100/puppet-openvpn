@@ -1,5 +1,18 @@
-# Usage ::
-
+# Class: OpenVPN
+#
+# This class installs OpenVPN 
+#
+# Parameters:
+#
+# Actions:
+#   - Install OpenVPN
+#   - Manage OpenVPN 
+#
+# Requires:
+# Puppet 3.x
+#
+# Sample Usage:
+#
 class openvpn {
 
 	include openvpn::params
