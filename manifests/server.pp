@@ -36,7 +36,7 @@
         $vpn_route,
         $log_level,	 
         $port		 = '1194',
-        $proto 		 = 'udp',)
+        $proto 	 = 'udp',)
      {
 
   include openvpn
