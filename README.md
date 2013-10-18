@@ -26,8 +26,8 @@ Because I am using puppet keys this module enforces the use of tls-auth see [tls
  ``` 
 # Sample Usage:
   openvpn::server {'vpnserver':
-            tun_dev     => tun0,
-            local_ip    => '10.1.0.26',
+            tun_dev    => tun0,
+            local_ip   => '10.1.0.26',
             vpn_server => '10.8.0.0 255.255.255.0',
             vpn_route  => ["10.8.1.0 255.255.255.0","10.8.2.0 255.255.255.0"],
             log_level  => '1',
