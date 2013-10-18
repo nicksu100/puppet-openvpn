@@ -1,8 +1,23 @@
-# Usage ::
-# Add the follwoing to your clients node manifest.
-# Make remote_ip => the address of your server or fqdn.
-# Make tun_dev   => your tun device
-#######################################################################
+# == Definition Resource Type: openvpn::server
+#
+# This class installs OpenVPN client 
+#
+# == Requirements/Dependencies
+#
+#
+# === Parameters:
+# - The $remote_ip the ip address or fqdn of your server 
+# - The $tun_dev the tun device to use. 
+#
+# Actions:
+# - Install OpenVPN and client config 
+#
+# Requires:
+# - The openvpn class.
+# - The openvpn::ta class.
+# - The openvpn::params class.
+#
+
 #          openvpn::client {
 #               'server1':
 #                remote_ip => 'server1.acme.com',

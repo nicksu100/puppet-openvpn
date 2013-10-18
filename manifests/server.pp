@@ -1,31 +1,47 @@
-# Usage :: Add the following to your nodes manifest for the openvpn server
-#  tun_dev : being the tun device
-#  local_ip : being the listening address
+# == Definition Resource Type: openvpn::server
 #
-############################################################################
-## Openvpn server
-#          include openvpn::server
-#          @openvpn::server::localvpnserver { "${hostname}vpnserver":
-#           tun_dev => 'tun0',
-#           local_ip => '10.1.0.1',
-#         }
-#       realize( Openvpn::Server::Localvpnserver["${hostname}vpnserver"])
+# This class installs OpenVPN server 
+#
+# == Requirements/Dependencies
+#
+#
+# === Parameters:
+# - The $tun_dev to configure the host on
+# - The $local_ip is the listenin IP
+# - The $vpn_server gives the default IP range 
+# - The $vpn_route defines the push routes to our clients
+# - The $log_level is the log level
+#
+# Actions:
+# - Install OpenVPN 
+#
+# Requires:
+# - The openvpn class.
+# - The openvpn::ta class.
+# - The openvpn::params class.
+#
+# Sample Usage:
+#  openvpn::server {'eqserver':
+#            tun_dev     => tun0,
+#            local_ip    => '10.1.0.26',
+#            vpn_server => '10.8.0.0 255.255.255.0',
+#            vpn_route  => ["10.8.1.0 255.255.255.0","10.8.2.0 255.255.255.0"],
+#            log_level  => '1',
+#          }
 #############################################################################
-
- class openvpn::server {
-       define localvpnserver (
+  define  openvpn::server ( 
         $tun_dev,
         $local_ip,
+        $vpn_server,
+        $vpn_route,
+        $log_level,	 
         $port		 = '1194',
-        $proto 		 = 'udp',
-        $vpn_server      = '10.5.128.0 255.255.255.0',
-        $vpn_route	 = ["10.5.129.0 255.255.255.0","10.8.0.0 255.255.255.0"],
-        $log_level	 = '1')
-    {
+        $proto 		 = 'udp',)
+     {
 
-      include openvpn
-      include openvpn::ta
-      include openvpn::params
+  include openvpn
+  include openvpn::ta
+  include openvpn::params
 
       $openvpn_dir = $openvpn::params::openvpn_dir
       $group_perms = $openvpn::params::group_perms
@@ -43,5 +59,4 @@
      onlyif   => "test ! -f ${openvpn_dir}/dh2048.pem",
       command => "/usr/sbin/openssl dhparam -out ${openvpn_dir}/dh2048.pem 2048"
      }
-   }
  }

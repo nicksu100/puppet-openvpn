@@ -1,4 +1,21 @@
-#Usage:
+# == Definition Resource Type: openvpn::cc 
+#
+# This class installs Client configurations 
+#
+# == Requirements/Dependencies
+#
+#
+# === Parameters:
+# - The $server_ip the server ip to route via 
+# - The $client_ip is the local IP
+#
+# Actions:
+# - Install OpenVPN client configs 
+#
+# Requires:
+# - The openvpn::params class.
+#
+# == Usage
 # Static client config
 # Can be implemented as below which would create 2 config files
 # myhost1.acme.com
@@ -18,16 +35,14 @@
 #                server_ip => "$vpn_cc_ip.5",
 #                client_ip => "$vpn_cc_ip.6";
 #           }
-
 #################################################################
-
- define openvpn::cc (
+  define openvpn::cc (
            $server_ip,
            $client_ip)
 
    { 
 
- include openvpn::params
+  include openvpn::params
 
       $openvpn_dir = $openvpn::params::openvpn_dir
       $group_perms = $openvpn::params::group_perms

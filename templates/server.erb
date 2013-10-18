@@ -19,7 +19,7 @@ tls-auth ta.key 0
 ifconfig-pool-persist /var/log/ipp.txt
 client-config-dir ccd
 persist-key
-persist-tu
+persist-tun
 verb <%= @log_level %>
 mute 20
 <% if operatingsystem == "FreeBSD" -%>

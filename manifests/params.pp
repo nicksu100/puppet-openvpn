@@ -24,16 +24,16 @@
    }
 
   $vpn_user = $::operatingsystem ? {
-    FreeBSD  		 => '_openvpn',
+    FreeBSD  		 => 'nobody',
     OpenBSD  		 => '_openvpn',
     /(?i:Debian|Ubuntu)/ => 'nobody',
     default              => 'openvpn',
   }
 
   $vpn_group = $::operatingsystem ? {
-    FreeBSD  		 => '_openvpn',
+    FreeBSD  		 => 'nobody',
     OpenBSD  		 => '_openvpn',
-    /(?i:Debian|Ubuntu)/ => 'nobody',
+    /(?i:Debian|Ubuntu)/ => 'nogroup',
     default              => 'openvpn',
   }
 
