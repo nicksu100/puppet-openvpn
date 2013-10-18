@@ -27,7 +27,7 @@
 ######################################################################
 
 define openvpn::client (
-	 	$remote_ip,
+	        $remote_ip,
                 $tun_dev,
                 $remote_port 	= '1194',
                 $proto 		= 'udp',)
