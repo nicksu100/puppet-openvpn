@@ -22,13 +22,6 @@ OpenVPN is a widely-used ssl vpn. This module creates the OpenVPN server and cli
 Because I am using puppet keys this module enforces the use of tls-auth see [tls-auth](#tls-auth). 
 
 ##Server Setup
-# Parameters:
-# - The $tun_dev tun device to configure the host on
-# - The $local_ip IP the server is the listening on.
-# - The $vpn_server gives the default IP range.
-# - The $vpn_route defines the push routes to our clients.
-# - The $log_level is the log level.
-# - The $cc_route client side routes to be published to server and all clients.
  ``` 
 # Sample Usage:
  $myhost2_iroute = "10.8.2.0 255.255.255.0"
@@ -45,9 +38,6 @@ Because I am using puppet keys this module enforces the use of tls-auth see [tls
 
 ##Static Client Setup
  Static client configs can be implemented as below which would create 2 config files. 
- - The $server_ip the server ip to route via
- - The $client_ip is the local IP
- - The $i_route any routes we want to publish
 
  ```
   $vpn_cc_ip             = "10.5.129"
@@ -69,9 +59,6 @@ Because I am using puppet keys this module enforces the use of tls-auth see [tls
  ```
 
 ## Client Setup
- Make remote_ip => the address of your server or fqdn.
-
- Make tun_dev   => your tun device
  ```
   openvpn::client {
     'server1':
