@@ -5,6 +5,11 @@ port <%= @port %>
 proto <%= @proto %>
 dev <%= @tun_dev %>
 server <%= @vpn_server %>
+<% if @cc_route.is_a? Array -%>
+<% @cc_route.each do |a| %>route <%= a %><%= "\n" %><% end -%>
+<% else if @cc_route != '' %><% end %>
+route <%= @cc_route -%>"
+<% end -%>
 client-to-client
 <% if @vpn_route.is_a? Array -%>
 <% @vpn_route.each do |a| %>push route <%= a %><%= "\n" %><% end -%>

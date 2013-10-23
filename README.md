@@ -22,44 +22,50 @@ OpenVPN is a widely-used ssl vpn. This module creates the OpenVPN server and cli
 Because I am using puppet keys this module enforces the use of tls-auth see [tls-auth](#tls-auth). 
 
 ##Server Setup
-
+# Parameters:
+# - The $tun_dev tun device to configure the host on
+# - The $local_ip IP the server is the listening on.
+# - The $vpn_server gives the default IP range.
+# - The $vpn_route defines the push routes to our clients.
+# - The $log_level is the log level.
+# - The $cc_route client side routes to be published to server and all clients.
  ``` 
 # Sample Usage:
-  openvpn::server {'vpnserver':
-            tun_dev    => tun0,
-            local_ip   => '10.1.0.26',
-            vpn_server => '10.8.0.0 255.255.255.0',
-            vpn_route  => ["10.8.1.0 255.255.255.0","10.8.2.0 255.255.255.0"],
-            log_level  => '1',
-          }
+ $myhost2_iroute = "10.8.2.0 255.255.255.0"
+   openvpn::server {'vpnserver':
+     tun_dev    => tun0,
+     local_ip   => '10.1.0.26',
+     vpn_server => '10.8.0.0 255.255.255.0',
+     vpn_route  => ["10.8.1.0 255.255.255.0","10.8.2.0 255.255.255.0"],
+     cc_route   => ["$myhost2_iroute"],
+     log_level  => '1',
+   } 
 
  ```
 
 ##Static Client Setup
  Static client configs can be implemented as below which would create 2 config files. 
+ - The $server_ip the server ip to route via
+ - The $client_ip is the local IP
+ - The $i_route any routes we want to publish
 
- myhost1.acme.com
-
- myhost2.acme.com 
-
- With the following content 
-
- myhost1.acme.com: ifconfig-push 10.5.129.1  10.5.129.2
-
- myhost2.acme.com  ifconfig-push 10.5.129.1  10.5.129.2
- ``` 
-           $vpn_cc_ip             = "10.5.129"
-           $domain_name           = "acme.com"
-
-           openvpn::cc {
-             "myhost1.$domain_name":
-                server_ip => "$vpn_cc_ip.1",
-                client_ip => "$vpn_cc_ip.2";
-            "myhost2.$domain_name":
-                server_ip => "$vpn_cc_ip.5",
-                client_ip => "$vpn_cc_ip.6";
-           }
-
+ ```
+  $vpn_cc_ip             = "10.5.129"
+  $domain_name           = "acme.com"
+ 
+  $myhost1_iroute = "10.100.0.0 255.255.255.0"
+  $myhost2_iroute = "10.0.80.0 255.255.255.0"
+ 
+  openvpn::cc {
+    "myhost1.$domain_name":
+      i_route   => ["$myhost2_iroute"],
+      server_ip => "$vpn_cc_ip.1",
+      client_ip => "$vpn_cc_ip.2";
+    "myhost2.$domain_name":
+       i_route   => [],
+       server_ip => "$vpn_cc_ip.5",
+       client_ip => "$vpn_cc_ip.6";
+  }
  ```
 
 ## Client Setup
@@ -67,11 +73,11 @@ Because I am using puppet keys this module enforces the use of tls-auth see [tls
 
  Make tun_dev   => your tun device
  ```
-          openvpn::client {
-               "server1":
-                remote_ip => "server1.acme.com",
-                tun_dev   => "tun0",
-              }
+  openvpn::client {
+    'server1':
+     remote_ip => 'server1.acme.com',
+     tun_dev   => 'tun0',
+  }
  ```
 
 ## Tls-auth
