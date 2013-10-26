@@ -21,7 +21,7 @@
 #
 # Sample Usage:
 #  $myhost2_iroute = "10.8.2.0 255.255.255.0"
-#  openvpn::server {'server1':
+#  openvpn::server {'vpnserver':
 #    tun_dev    => tun0,
 #    local_ip   => '10.1.0.26',
 #    vpn_server => '10.8.0.0 255.255.255.0',
@@ -36,7 +36,6 @@
     $vpn_server,
     $vpn_route,
     $log_level,
-    $cc_route,
     $port        = '1194',
     $proto       = 'udp',)
   {
