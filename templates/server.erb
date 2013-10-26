@@ -5,15 +5,19 @@ port <%= @port %>
 proto <%= @proto %>
 dev <%= @tun_dev %>
 server <%= @vpn_server %>
-<% if @cc_route.is_a? Array -%>
-<% @cc_route.each do |a| %>route <%= a %><%= "\n" %><% end -%>
-<% else if @cc_route != '' %><% end %>
-route <%= @cc_route -%>"
+<% if @vpn_route.is_a? Array -%>
+#Create routes to client subnets 
+<% @vpn_route.each do |a| %>route <%= a %><%= "\n" %><% end -%>
+<% else if @vpn_route != '' %><% end %>
+#Create routes to client subnets 
+route <%= @vpn_route -%>"
 <% end -%>
 client-to-client
 <% if @vpn_route.is_a? Array -%>
+# Push routes to clients so they are aware of client subnets
 <% @vpn_route.each do |a| %>push route <%= a %><%= "\n" %><% end -%>
 <% else if @vpn_route != '' %><% end %>
+# Push routes to clients so they are aware of client subnets
 push "route <%= @vpn_route -%>"
 <% end -%>
 ca /etc/puppet/ssl/certs/ca.pem
@@ -37,6 +41,4 @@ group _openvpn
 user nobody
 group nogroup
 <% end -%>
-#user <%= @vpn_user %>
-#group <%= @vpn_group %>
 keepalive 10 60
