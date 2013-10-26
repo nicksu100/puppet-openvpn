@@ -1,4 +1,4 @@
-# == Definition Resource Type: openvpn::cc
+# == Definition Resource Type: openvpn::client_configs
 #
 # This class installs Client configurations
 #
@@ -20,24 +20,26 @@
 # Static client config
 # Sample Usage:
 ##################################################################
-#  $vpn_cc_ip             = "10.5.129"
-#  $domain_name           = "acme.com"
+#           $vpn_cc_ip             = "10.5.129"
+#           $domain_name           = "acme.com"
 #
-#  $myhost1_iroute = "10.100.0.0 255.255.255.0"
-#  $myhost2_iroute = "10.0.80.0 255.255.255.0"
+#           $myhost1_iroute = "10.100.0.0 255.255.255.0"
+#           $myhost2_iroute = "10.0.80.0 255.255.255.0"
 #
-#  openvpn::cc {
-#    "myhost1.$domain_name":
-#       i_route  => ["$myhost2_iroute"],
-#       server_ip => "$vpn_cc_ip.1",
-#       client_ip => "$vpn_cc_ip.2";
-#    "myhost2.$domain_name":
-#       i_route  => [],
-#       server_ip => "$vpn_cc_ip.5",
-#       client_ip => "$vpn_cc_ip.6";
-#   }
+#
+#
+#           openvpn::client_configs {
+#             "myhost1.$domain_name":
+#                 i_route  => ["$myhost2_iroute"],
+#                server_ip => "$vpn_cc_ip.1",
+#                client_ip => "$vpn_cc_ip.2";
+#            "myhost2.$domain_name":
+#                 i_route  => [],
+#                server_ip => "$vpn_cc_ip.5",
+#                client_ip => "$vpn_cc_ip.6";
+#           }
 #################################################################
-  define openvpn::cc (
+  define openvpn::client_configs (
     $i_route,
     $server_ip,
     $client_ip,)
@@ -48,7 +50,7 @@
 
 # Add cc fixed ip required for BGP
     file { "${openvpn_dir}/ccd/${name}":
-      content => template('openvpn/cc.erb'),
+      content => template('openvpn/client_configs.erb'),
       owner   => root,
       group   => "${group_perms}",
       mode    => '0644',
