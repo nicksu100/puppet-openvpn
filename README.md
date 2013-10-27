@@ -11,60 +11,125 @@ puppet-openvpn
 6. [Tls-auth - Creating your ta.key for use with this module. ](#tls-auth)
 
 ##Overview
-
-This OpenVPN module uses the Puppet Certificate Authority. This negates the need to setup a Certificate Authority. 
-I am using this setup to provide an iBGP full mesh backup on OpenBSD.
+This OpenVPN module uses the Puppet Certificate Authority. This negates the need to setup a separate certificate Authority. You can either use this module to create a hub and spoke setup using OpenVPN routing or this can be used in conjunction with OpenBGP if you are running on BSD. 
 
 ##Module Description
-
-
 OpenVPN is a widely-used ssl vpn. This module creates the OpenVPN server and client configurations for puppet managed machines. 
-Because I am using puppet keys this module enforces the use of tls-auth see [tls-auth](#tls-auth). 
+Because I am using puppet keys this module enforces the use of tls-auth see [tls-auth](#tls-auth).This module
+is ideally suited to when you have gateway machines connecting to a central site. By using client-configs. 
+we can publish networks so the server and all client machines become routable. If you are using a BSD variant then we can use
+OpenBGP to inject routes instead of OpenVPN routing. 
 
 ##Server Setup
- ``` 
-# Sample Usage:
- $myhost2_iroute = "10.8.2.0 255.255.255.0"
+This server setup can either use OpenVPN to provide routing or a third party software like OpenBGP.
+
+# Configure a server using OpenVPN routing for 3 clients. 
+This example has 3 clients are donald, daffy and mickey. Donald will publish the route 10.0.10.0/24, daffy will publish the route 10.0.20.0/24 and mickey will just be a client. 
+
+Add the following to your vpn servers manifest.
+
+ ```
+#Set up variables. 
+  $client_config_leading  = "10.8.1"
+  $domain_name            = "acme.com"
+  $donald_iroute          = "10.0.10.0 255.255.255.0"
+  $daffy_iroute           = "10.0.20.0 255.255.255.0"
+#Setup the OpenVPN server listening on 10.1.0.26.
    openvpn::server {'vpnserver':
-     tun_dev    => tun0,
-     local_ip   => '10.1.0.26',
-     vpn_server => '10.8.0.0 255.255.255.0',
-     vpn_route  => ["10.8.1.0 255.255.255.0","10.8.2.0 255.255.255.0"],
-     cc_route   => ["$myhost2_iroute"],
-     log_level  => '1',
+     tun_dev              => tun0,
+     local_ip             => '10.1.0.26',
+     vpn_server           => '10.8.0.0 255.255.255.0',
+     vpn_route            => ["$client_config_leading.0 255.255.255.0","$donald_iroute","$daffy_iroute"],
+     log_level            => '1',
    } 
-
- ```
-
-##Static Client Setup
- Static client configs can be implemented as below which would create 2 config files. 
-
- ```
-  $vpn_cc_ip             = "10.5.129"
-  $domain_name           = "acme.com"
- 
-  $myhost1_iroute = "10.100.0.0 255.255.255.0"
-  $myhost2_iroute = "10.0.80.0 255.255.255.0"
- 
-  openvpn::cc {
-    "myhost1.$domain_name":
-      i_route   => ["$myhost2_iroute"],
-      server_ip => "$vpn_cc_ip.1",
-      client_ip => "$vpn_cc_ip.2";
-    "myhost2.$domain_name":
-       i_route   => [],
-       server_ip => "$vpn_cc_ip.5",
-       client_ip => "$vpn_cc_ip.6";
+# Setup the Client Configs on the OpenVPN server.
+  openvpn::client_configs {
+    "donald.$domain_name":
+      i_route   => ["$donald_iroute"],
+      server_ip => "$client_config_leading.1",
+      client_ip => "$client_config_leading.2";
+    "daffy.$domain_name":
+       i_route   => ["$daffy_iroute"],
+       server_ip => "$client_config_leading.5",
+       client_ip => "$client_config_leading.6";
+     "mickey.$domain_name":
+        i_route   => [],
+        server_ip => "$client_config_leading.9",
+        client_ip => "$client_config_leading.10";
   }
  ```
 
-## Client Setup
+Add the following to donald, daffy and mickey manifests.
+
  ```
   openvpn::client {
-    'server1':
-     remote_ip => 'server1.acme.com',
-     tun_dev   => 'tun0',
+    "vpnserver":
+      remote_ip => "10.1.0.26",
+      tun_dev   => "tun0",
   }
+ ```                                                              
+
+# Configure the OpenVPN server to be used in combination with OpenBGP.  
+This example has 3 clients again donald, daffy and mickey. This time we are just allocating fix ip addresses routing can
+be provided by OpenBGP.
+
+
+ ```
+#Set up variables. 
+  $client_config_leading  = "10.8.1"
+  $domain_name            = "acme.com"
+
+#Setup the OpenVPN server listening on 10.1.0.26.
+   openvpn::server {'vpnserver':
+     tun_dev              => tun0,
+     local_ip             => '10.1.0.26',
+     vpn_server           => '10.8.0.0 255.255.255.0',
+     vpn_route            => ["$client_config_leading.0 255.255.255.0"],
+     log_level            => '1',
+   } 
+# Setup the Client Configs on the OpenVPN server.
+  openvpn::client_configs {
+    "donald.$domain_name":
+      i_route   => [],
+      server_ip => "$client_config_leading.1",
+      client_ip => "$client_config_leading.2";
+    "daffy.$domain_name":
+       i_route   => [],
+       server_ip => "$client_config_leading.5",
+       client_ip => "$client_config_leading.6";
+     "mickey.$domain_name":
+        i_route   => [],
+        server_ip => "$client_config_leading.9",
+        client_ip => "$client_config_leading.10";
+  }
+ ```
+
+Add the following to donald, daffy and mickey manifests.
+
+ ```
+  openvpn::client {
+    "vpnserver":
+      remote_ip => "10.1.0.26",
+      tun_dev   => "tun0",
+  }
+ ``` 
+
+The following table provided last octet in the IP address for the client config endpoints
+
+ ```
+[  1,  2] [  5,  6] [  9, 10] [ 13, 14] [ 17, 18]
+[ 21, 22] [ 25, 26] [ 29, 30] [ 33, 34] [ 37, 38]
+[ 41, 42] [ 45, 46] [ 49, 50] [ 53, 54] [ 57, 58]
+[ 61, 62] [ 65, 66] [ 69, 70] [ 73, 74] [ 77, 78]
+[ 81, 82] [ 85, 86] [ 89, 90] [ 93, 94] [ 97, 98]
+[101,102] [105,106] [109,110] [113,114] [117,118]
+[121,122] [125,126] [129,130] [133,134] [137,138]
+[141,142] [145,146] [149,150] [153,154] [157,158]
+[161,162] [165,166] [169,170] [173,174] [177,178]
+[181,182] [185,186] [189,190] [193,194] [197,198]
+[201,202] [205,206] [209,210] [213,214] [217,218]
+[221,222] [225,226] [229,230] [233,234] [237,238]
+[241,242] [245,246] [249,250] [253,254]
  ```
 
 ## Tls-auth
@@ -73,7 +138,10 @@ You will need to run the following from a machine with openvpn installed.
  ```
 openvpn --genkey --secret ta.key
  ```
-Then copy the ta.key file over a secure channel to the files directory under the puppet-openvpn module.
+Then copy the ta.key file over a secure channel to the files directory under the puppet-openvpn module so it can be called by.
+ ```
+ source => 'puppet:///modules/openvpn/ta.key'
+ ```
 
 Here is some more information on why the ta.key is a good idea taken from openvpn.net:
 
