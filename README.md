@@ -23,7 +23,7 @@ OpenBGP to inject routes instead of OpenVPN routing.
 ##Server Setup
 This server setup can either use OpenVPN to provide routing or a third party software like OpenBGP.
 
-# Configure a server using OpenVPN routing for 3 clients. 
+### Configure a server using OpenVPN routing for 3 clients. 
 This example has 3 clients are donald, daffy and mickey. Donald will publish the route 10.0.10.0/24, daffy will publish the route 10.0.20.0/24 and mickey will just be a client. 
 
 Add the following to your vpn servers manifest.
@@ -59,7 +59,7 @@ Add the following to your vpn servers manifest.
   }
  ```
 
-Add the following to donald, daffy and mickey manifests.
+### Setup OpenVPN clients to connect to server
 
  ```
   openvpn::client {
@@ -69,7 +69,7 @@ Add the following to donald, daffy and mickey manifests.
   }
  ```                                                              
 
-# Configure the OpenVPN server to be used in combination with OpenBGP.  
+### Configure the OpenVPN server to be used in combination with OpenBGP.  
 This example has 3 clients again donald, daffy and mickey. This time we are just allocating fix ip addresses routing can
 be provided by OpenBGP.
 
@@ -104,7 +104,7 @@ be provided by OpenBGP.
   }
  ```
 
-Add the following to donald, daffy and mickey manifests.
+### Setup OpenVPN clients to connect to server
 
  ```
   openvpn::client {
