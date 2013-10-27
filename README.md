@@ -6,9 +6,8 @@ puppet-openvpn
 1. [Overview - What is this OpenVPN Module.](#overview)
 2. [Module Description - What does the module do?](#module-description)
 3. [Sever Setup - The basics of getting started with OpenVPN Server. ](#server-setup)
-4. [Static Client Setup - Supporting static clients or BGP configurations. ](#static-client-setup)
-5. [Client Setup - How to connect to your server. ](#client-setup)
-6. [Tls-auth - Creating your ta.key for use with this module. ](#tls-auth)
+4. [Client Setup - How to connect to your server. ](#client-setup)
+5. [Tls-auth - Creating your ta.key for use with this module. ](#tls-auth)
 
 ##Overview
 This OpenVPN module uses the Puppet Certificate Authority. This negates the need to setup a separate certificate Authority. You can either use this module to create a hub and spoke setup using OpenVPN routing or this can be used in conjunction with OpenBGP if you are running on BSD. 
@@ -59,7 +58,7 @@ Add the following to your vpn servers manifest.
   }
  ```
 
-### Setup OpenVPN clients to connect to server
+### Client Setup 
 
  ```
   openvpn::client {
