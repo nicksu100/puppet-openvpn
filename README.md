@@ -57,17 +57,6 @@ Add the following to your vpn servers manifest.
         client_ip => "$client_config_leading.10";
   }
  ```
-
-### Client Setup 
-
- ```
-  openvpn::client {
-    "vpnserver":
-      remote_ip => "10.1.0.26",
-      tun_dev   => "tun0",
-  }
- ```                                                              
-
 ### Configure the OpenVPN server to be used in combination with OpenBGP.  
 This example has 3 clients again donald, daffy and mickey. This time we are just allocating fix ip addresses routing can
 be provided by OpenBGP.
@@ -103,7 +92,7 @@ be provided by OpenBGP.
   }
  ```
 
-### Setup OpenVPN clients to connect to server
+### Client Setup 
 
  ```
   openvpn::client {
@@ -111,8 +100,7 @@ be provided by OpenBGP.
       remote_ip => "10.1.0.26",
       tun_dev   => "tun0",
   }
- ``` 
-
+ ```
 The following table provided last octet in the IP address for the client config endpoints
 
  ```
