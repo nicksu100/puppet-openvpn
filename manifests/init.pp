@@ -8,6 +8,7 @@
 
     package { 'openvpn':
       ensure => 'present',
+      source => "http://mirror.bytemark.co.uk/OpenBSD/${operatingsystemrelease}/packages/${architecture}/openvpn-2.2.2p1.tgz",
     }
 
     file { "${openvpn_dir}":
@@ -21,6 +22,10 @@
       owner  => 'root',
       group  => "${group_perms}",
       mode   => '0755',
+    }
+
+    Exec {
+      path => '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/sbin',
     }
 
     case $::operatingsystem {

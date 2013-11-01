@@ -2,6 +2,9 @@ client
 remote <%= @remote_ip %> <%= @remote_port %> 
 proto <%= @proto %>
 dev <%= @tun_dev %>
+<% if @tap %>
+dev-type tap
+<% end -%>
 ca /etc/puppet/ssl/certs/ca.pem
 cert /etc/puppet/ssl/certs/<%= @fqdn %>.pem
 key /etc/puppet/ssl/private_keys/<%= @fqdn %>.pem

@@ -10,4 +10,5 @@
       mode   => '0600',
       source => 'puppet:///modules/openvpn/ta.key',
     }
+
   }

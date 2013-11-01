@@ -9,6 +9,7 @@
 # - The $local_ip IP the server is the listening on.
 # - The $vpn_server gives the default IP range.
 # - The $vpn_route defines the push routes to our clients.
+# - The $vpn_server_ip defines the ip of the vpn server required for bridge mode
 # - The $log_level is the log level.
 # - The $cc_route client side routes to be published to server and all clients.
 # Actions:
@@ -21,7 +22,7 @@
 #
 # Sample Usage:
 #  $myhost2_iroute = "10.8.2.0 255.255.255.0"
-#  openvpn::server {'vpnserver':
+#  openvpn::server {'eqserver':
 #    tun_dev    => tun0,
 #    local_ip   => '10.1.0.26',
 #    vpn_server => '10.8.0.0 255.255.255.0',
@@ -36,8 +37,11 @@
     $vpn_server,
     $vpn_route,
     $log_level,
-    $port        = '1194',
-    $proto       = 'udp',)
+    $vpn_server_ip    = undef,
+    $tap              = false,  
+    $client_to_client = false,
+    $port             = '1194',
+    $proto            = 'udp',)
   {
   include openvpn
   include openvpn::ta
@@ -53,6 +57,17 @@
       require => Package['openvpn'],
       notify  => Exec[openvpn_load],
     }
+     if $tap {
+       file { "/etc/hostname.$tun_dev":
+         content => template('openvpn/server_hostname_tun.erb'),
+         owner   => root,
+         group   => "${group_perms}",
+         mode    => '0640',
+         require => Package['openvpn'],
+         notify  => Exec[openvpn_load]
+       }
+     } 
+
 
     exec { 'create_dh':
       onlyif  => "test ! -f ${openvpn_dir}/dh2048.pem",

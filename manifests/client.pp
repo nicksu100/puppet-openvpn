@@ -18,17 +18,18 @@
 # - The openvpn::params class.
 #
 #  Sample Usage:
-#  openvpn::client {
-#    'server1':
-#       remote_ip => 'server1.acme.com',
-#       tun_dev   => 'tun0',
-#  }
+#          openvpn::client {
+#               'server1':
+#                remote_ip => 'server1.acme.com',
+#                tun_dev   => 'tun0',
+#          }
 #
 ######################################################################
 
   define openvpn::client (
     $remote_ip,
     $tun_dev,
+    $tap         = false,
     $remote_port = '1194',
     $proto       = 'udp',)
   {
@@ -47,5 +48,16 @@
       mode    => '0640',
       require => Package['openvpn'],
       notify  => Exec[openvpn_load]
+    }
+
+    if $tap {
+      file { "/etc/hostname.$tun_dev":
+        content => template('openvpn/client_hostname_tun.erb'),
+        owner   => root,
+        group   => "${group_perms}",
+        mode    => '0640',
+        require => Package['openvpn'],
+        notify  => Exec[openvpn_load]
+      } 
     }
   }

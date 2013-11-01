@@ -4,7 +4,13 @@ local <%= @local_ip %>
 port <%= @port %>
 proto <%= @proto %>
 dev <%= @tun_dev %>
+<% if @tap %>
+dev-type tap
+server-bridge 
+<% else %>
 server <%= @vpn_server %>
+topology subnet
+<% end -%>
 <% if @vpn_route.is_a? Array -%>
 #Create routes to client subnets 
 <% @vpn_route.each do |a| %>route <%= a %><%= "\n" %><% end -%>
@@ -12,7 +18,9 @@ server <%= @vpn_server %>
 #Create routes to client subnets 
 route <%= @vpn_route -%>"
 <% end -%>
+<% if @client_to_client -%>
 client-to-client
+<% end -%>
 <% if @vpn_route.is_a? Array -%>
 # Push routes to clients so they are aware of client subnets
 <% @vpn_route.each do |a| %>push route <%= a %><%= "\n" %><% end -%>
@@ -25,7 +33,9 @@ cert /etc/puppet/ssl/certs/<%= @fqdn %>.pem
 key /etc/puppet/ssl/private_keys/<%= @fqdn %>.pem
 dh dh2048.pem
 tls-auth ta.key 0
+<% if @pool_persist %>
 ifconfig-pool-persist /var/log/ipp.txt
+<% end -%>
 client-config-dir ccd
 persist-key
 persist-tun
