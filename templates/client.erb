@@ -1,6 +1,10 @@
 client
-remote <%= @remote_ip %> <%= @remote_port %> 
-proto <%= @proto %>
+remote <%= @vpnserver %> <%= @remote_port %> 
+<% if @tcp -%>
+proto tcp 
+<% else %>
+proto udp 
+<% end -%>
 dev <%= @tun_dev %>
 <% if @tap %>
 dev-type tap

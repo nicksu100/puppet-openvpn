@@ -1,5 +1,11 @@
+<% if @i_route -%>
 <% if @i_route.is_a? Array -%>
 <% @i_route.each do |a| %>iroute <%= a %><%= "\n" %><% end -%>
 <% else if @i_route != '' %><% end -%>
 iroute <%= @i_route %><%= "\n" %><% end -%>
+<% end -%>
+<% if @server_ip -%>
 ifconfig-push <%= @client_ip %> <%= @server_ip %>
+<% else -%>
+ifconfig-push <%= @client_ip %> 255.255.255.0 
+<% end -%>

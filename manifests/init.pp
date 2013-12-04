@@ -5,7 +5,6 @@
 
     $openvpn_dir = $openvpn::params::openvpn_dir
     $group_perms = $openvpn::params::group_perms
-
     package { 'openvpn':
       ensure => 'present',
       source => "http://mirror.bytemark.co.uk/OpenBSD/${operatingsystemrelease}/packages/${architecture}/openvpn-2.2.2p1.tgz",
@@ -25,7 +24,7 @@
     }
 
     Exec {
-      path => '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/sbin',
+      path => '/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/sbin:/usr/local/bin',
     }
 
     case $::operatingsystem {

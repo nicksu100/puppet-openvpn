@@ -70,25 +70,20 @@ be provided by OpenBGP.
 #Setup the OpenVPN server listening on 10.1.0.26.
    openvpn::server {'vpnserver':
      tun_dev              => tun0,
+     tap                  => true,
      local_ip             => '10.1.0.26',
      vpn_server           => '10.8.0.0 255.255.255.0',
-     vpn_route            => ["$client_config_leading.0 255.255.255.0"],
+     vpn_server_ip        => '10.8.0.1',
      log_level            => '1',
    } 
 # Setup the Client Configs on the OpenVPN server.
   openvpn::client_configs {
     "donald.$domain_name":
-      i_route   => [],
-      server_ip => "$client_config_leading.1",
       client_ip => "$client_config_leading.2";
     "daffy.$domain_name":
-       i_route   => [],
-       server_ip => "$client_config_leading.5",
-       client_ip => "$client_config_leading.6";
+       client_ip => "$client_config_leading.3";
      "mickey.$domain_name":
-        i_route   => [],
-        server_ip => "$client_config_leading.9",
-        client_ip => "$client_config_leading.10";
+        client_ip => "$client_config_leading.4";
   }
  ```
 
@@ -99,6 +94,7 @@ be provided by OpenBGP.
     "vpnserver":
       remote_ip => "10.1.0.26",
       tun_dev   => "tun0",
+      tap       => true,
   }
  ```
 The following table provided last octet in the IP address for the client config endpoints

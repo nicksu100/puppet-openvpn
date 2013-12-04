@@ -11,12 +11,14 @@ server-bridge
 server <%= @vpn_server %>
 topology subnet
 <% end -%>
+<% if @vpn_route -%>
 <% if @vpn_route.is_a? Array -%>
 #Create routes to client subnets 
 <% @vpn_route.each do |a| %>route <%= a %><%= "\n" %><% end -%>
 <% else if @vpn_route != '' %><% end %>
 #Create routes to client subnets 
 route <%= @vpn_route -%>"
+<% end -%>
 <% end -%>
 <% if @client_to_client -%>
 client-to-client

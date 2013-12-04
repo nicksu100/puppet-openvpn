@@ -11,7 +11,8 @@
 # - The $vpn_route defines the push routes to our clients.
 # - The $vpn_server_ip defines the ip of the vpn server required for bridge mode
 # - The $log_level is the log level.
-# - The $cc_route client side routes to be published to server and all clients.
+# - The $tap if our device is tap device required if using bridging.
+# - The $client_to_client set to true allows clients to connect to each other. 
 # Actions:
 # - Install OpenVPN
 # Requires:
@@ -20,14 +21,26 @@
 # - The openvpn::params class.
 #
 #
-# Sample Usage:
-#  $myhost2_iroute = "10.8.2.0 255.255.255.0"
-#  openvpn::server {'eqserver':
+# Sample Usage: 
+# Create a openvpn server using bridging for use in combination with BGP. Each subsequent client can use
+# incremental ip of 10.8.0.2, 10.8.0.3 and so on. 
+#
+#  openvpn::server {'vpnserver':
+#     tun_dev              => tun0,
+#     tap                  => true,
+#     local_ip             => '192.168.10.1',
+#     vpn_server           => '10.8.0.0 255.255.255.0',
+#     vpn_server_ip        => '10.8.0.1',
+#     log_level            => '1',
+#   }
+#
+#
+#   Create a server using OpenVPN routing to publish 10.8.1.0/24 and# 10.8.2.0/24 to all clients. 
+#  openvpn::server {'vpnserver':
 #    tun_dev    => tun0,
 #    local_ip   => '10.1.0.26',
 #    vpn_server => '10.8.0.0 255.255.255.0',
 #    vpn_route  => ["10.8.1.0 255.255.255.0","10.8.2.0 255.255.255.0"],
-#    cc_route   => ["$myhost2_iroute"],
 #    log_level  => '1',
 #  }
 #############################################################################
@@ -37,6 +50,7 @@
     $vpn_server,
     $vpn_route,
     $log_level,
+    $vpn_route        = undef,
     $vpn_server_ip    = undef,
     $tap              = false,  
     $client_to_client = false,
@@ -57,20 +71,21 @@
       require => Package['openvpn'],
       notify  => Exec[openvpn_load],
     }
+   if $::osfamily == 'OpenBSD' { 
      if $tap {
-       file { "/etc/hostname.$tun_dev":
-         content => template('openvpn/server_hostname_tun.erb'),
-         owner   => root,
-         group   => "${group_perms}",
-         mode    => '0640',
-         require => Package['openvpn'],
-         notify  => Exec[openvpn_load]
+         file { "/etc/hostname.$tun_dev":
+           content => template('openvpn/server_hostname_tun.erb'),
+           owner   => root,
+           group   => "${group_perms}",
+           mode    => '0640',
+           require => Package['openvpn'],
+           notify  => Exec[openvpn_load]
        }
      } 
-
-
+  }
+Exec { path => "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/sbin:/usr/local/bin" }
     exec { 'create_dh':
       onlyif  => "test ! -f ${openvpn_dir}/dh2048.pem",
-      command => "/usr/sbin/openssl dhparam -out ${openvpn_dir}/dh2048.pem 2048"
+      command => "openssl dhparam -out ${openvpn_dir}/dh2048.pem 2048"
     }
   }

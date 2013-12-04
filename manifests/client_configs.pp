@@ -6,8 +6,9 @@
 #
 #
 # === Parameters:
-# - The $server_ip the server ip to route via
 # - The $client_ip is the local IP
+# - The $server_ip if using the server ip to route via server.
+# - The $bridge_netmask if using bridging we need to set a mask client configs can be incremental ips.
 # - The $i_route any routes we want to publish
 #   via OpenVPN to the serve and clients.
 # Actions:
@@ -20,6 +21,17 @@
 # Static client config
 # Sample Usage:
 ##################################################################
+#           $domain_name = "acme.com"
+#
+#           openvpn::client_configs {
+#             "myhost1.$domain_name":
+#                client_ip => "$vpn_cc_ip.2";
+#            "myhost2.$domain_name":
+#                client_ip => "$vpn_cc_ip.3";
+#            "myhost3.$domain_name":
+#                client_ip => "$vpn_cc_ip.4";
+#           }
+##################################################################
 #           $vpn_cc_ip             = "10.5.129"
 #           $domain_name           = "acme.com"
 #
@@ -31,22 +43,24 @@
 #           openvpn::client_configs {
 #             "myhost1.$domain_name":
 #                 i_route  => ["$myhost2_iroute"],
-#                server_ip => "$vpn_cc_ip.1",
 #                client_ip => "$vpn_cc_ip.2";
+#                server_ip => "$vpn_cc_ip.1",
 #            "myhost2.$domain_name":
-#                 i_route  => [],
-#                server_ip => "$vpn_cc_ip.5",
 #                client_ip => "$vpn_cc_ip.6";
+#                server_ip => "$vpn_cc_ip.5",
 #           }
 #################################################################
   define openvpn::client_configs (
-    $i_route,
-    $server_ip,
-    $client_ip,)
+    $client_ip,
+    $i_route        = undef,
+    $server_ip      = undef,
+    $bridge_netmask = undef, )
   {
       include openvpn::params
       $openvpn_dir = $openvpn::params::openvpn_dir
       $group_perms = $openvpn::params::group_perms
+
+      # need to make condition fire if server_ip and bridge_netmask undef
 
 # Add cc fixed ip required for BGP
     file { "${openvpn_dir}/ccd/${name}":

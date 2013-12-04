@@ -6,8 +6,9 @@
 #
 #
 # === Parameters:
-# - The $remote_ip the ip address or fqdn of your server
+# - The $vpnserver the ip address or fqdn of your server
 # - The $tun_dev the tun device to use.
+# - The $tap false if using openvpn routing true if using bridging.
 #
 # Actions:
 # - Install OpenVPN and client config
@@ -18,16 +19,25 @@
 # - The openvpn::params class.
 #
 #  Sample Usage:
+# - The following config is setting up bridging the ip address to be supplied from the client config. This config can be used
+# - in conjunction with BGP.
 #          openvpn::client {
 #               'server1':
-#                remote_ip => 'server1.acme.com',
+#                vpnserver => '192.168.10.1',
 #                tun_dev   => 'tun0',
+#                tap       => true,
 #          }
 #
+# - The following config would use Openvpn routing. The ip address and routing can be provided using the client configs.
+#          openvpn::client {
+#               'server1':
+#                vpnserver => '192.168.10.1',
+#                tun_dev   => 'tun0',
+#          }
 ######################################################################
 
   define openvpn::client (
-    $remote_ip,
+    $vpnserver,
     $tun_dev,
     $tap         = false,
     $remote_port = '1194',
