@@ -40,6 +40,7 @@
 
     service { 'openvpn':
       ensure    => running,
+      start     => "${restart}",
       hasstatus => false,
       enable    => true,
       pattern   => 'openvpn',
