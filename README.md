@@ -22,6 +22,45 @@ OpenBGP to inject routes instead of OpenVPN routing.
 ##Server Setup
 This server setup can either use OpenVPN to provide routing or a third party software like OpenBGP.
 
+### Configure the OpenVPN server in Bridging mode to be used in combination with OpenBGP.  
+(Currently this mode only works on OpenBSD.)
+This example has 3 clients donald, daffy and mickey. This time we are just allocating fix ip addresses routing can
+be provided by OpenBGP.
+
+
+ ```
+
+#Setup the OpenVPN server listening on 10.1.0.26.
+   openvpn::server {'vpnserver':
+     tun_dev              => tun0,
+     tap                  => true,
+     local_ip             => '10.1.0.26',
+     vpn_server           => '10.8.0.0 255.255.255.0',
+     vpn_server_ip        => '10.8.0.1',
+     log_level            => '1',
+   } 
+# Setup the Client Configs on the OpenVPN server.
+  openvpn::client_configs {
+    "donald.$domain_name":
+      client_ip => "10.8.0.2";
+    "daffy.$domain_name":
+       client_ip => "10.8.0.3";
+     "mickey.$domain_name":
+        client_ip => "10.8.0.4";
+  }
+ ```
+### Configurations for clients connecting to bridge mode server.
+
+ ```
+  openvpn::client {
+    "vpnserver":
+      remote_ip => "10.1.0.26",
+      tun_dev   => "tun0",
+      tap       => true,
+  }
+ ```
+
+
 ### Configure a server using OpenVPN routing for 3 clients. 
 This example has 3 clients donald, daffy and mickey. Donald will publish the route 10.0.10.0/24, daffy will publish the route 10.0.20.0/24 and mickey will just be a client. 
 
@@ -57,44 +96,14 @@ Add the following to your vpn servers manifest.
         client_ip => "$client_config_leading.10";
   }
  ```
-### Configure the OpenVPN server to be used in combination with OpenBGP.  
-This example has 3 clients again donald, daffy and mickey. This time we are just allocating fix ip addresses routing can
-be provided by OpenBGP.
+### Configure for clients connecting to a OpenVPN server using tun mode.
 
-
- ```
-#Set up variables. 
-  $client_config_leading  = "10.8.1"
-  $domain_name            = "acme.com"
-
-#Setup the OpenVPN server listening on 10.1.0.26.
-   openvpn::server {'vpnserver':
-     tun_dev              => tun0,
-     tap                  => true,
-     local_ip             => '10.1.0.26',
-     vpn_server           => '10.8.0.0 255.255.255.0',
-     vpn_server_ip        => '10.8.0.1',
-     log_level            => '1',
-   } 
-# Setup the Client Configs on the OpenVPN server.
-  openvpn::client_configs {
-    "donald.$domain_name":
-      client_ip => "$client_config_leading.2";
-    "daffy.$domain_name":
-       client_ip => "$client_config_leading.3";
-     "mickey.$domain_name":
-        client_ip => "$client_config_leading.4";
-  }
- ```
-
-### Client Setup 
-
- ```
+The following config would use Openvpn routing. The ip address and routing can be provided using the client configs.
+ ```  
   openvpn::client {
-    "vpnserver":
-      remote_ip => "10.1.0.26",
-      tun_dev   => "tun0",
-      tap       => true,
+    'server1':
+     vpnserver => '10.1.0.26',
+     tun_dev   => 'tun0',
   }
  ```
 The following table provided last octet in the IP address for the client config endpoints
